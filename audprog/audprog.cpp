@@ -280,13 +280,14 @@ int AUD_readToFile(PARAMS* params) {
 }
 
 int AUD_readToScreen(PARAMS* params) {
-	unsigned long a = params->offset;
+	
 	unsigned char bData;
 	unsigned short wData;
 	unsigned long lData;
 
-	if (params->mode == AUD_WORD) a = (a / 2) * 2; // to avoid unaligned access 4n+1 or 4n+3
-	if (params->mode == AUD_LONGWORD) a = (a / 4) * 4; // to avoid unaligned access 4n+1, 4n+2 or 4n+3
+	if (params->mode == AUD_WORD) params->offset = (params->offset / 2) * 2; // to avoid unaligned access 4n+1 or 4n+3
+	if (params->mode == AUD_LONGWORD) params->offset = (params->offset / 4) * 4; // to avoid unaligned access 4n+1, 4n+2 or 4n+3
+	unsigned long a = params->offset;
 
 	printf_s("\n");
 
@@ -306,7 +307,7 @@ int AUD_readToScreen(PARAMS* params) {
 			break;
 		case AUD_LONGWORD:
 			lData = AUD_readLWord(params->ftDevice, a);
-			if ((a - params->offset) % 0x10 == 0) printf_s("\n0x%06x  ", a);
+			if ((a - params->offset) % 0x010 == 0) printf_s("\n0x%06x  ", a);
 			printf_s("%08x ", lData);
 			a += 4;
 			break;
@@ -327,7 +328,7 @@ int AUD_dumpToFile(PARAMS* params) {
 	printf("\nDumping %d bytes\n", size);
 
 	HANDLE oFile = CreateStorage(params->fileName);
-	while (a <= size) {
+	while (a < size) {
 		unsigned long d = (AUD_readLWord(params->ftDevice, a));
 		WriteFile(oFile, &d, sizeof(d), &b, NULL);
 		a += 4;
@@ -420,7 +421,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 		return 0;
 	}
 	else {
-		if (num > 1) wprintf_s(L"More than 1 FTDI devices found, please ensure that the correct one is used. Use \"audprog.exe --list\" to query available devices.\n");
+		if (num > 1) wprintf_s(L"There are %d FTDI devices found, please ensure that the correct one is used. Use \"audprog.exe --list\" to query available devices.\n", num);
 	}
 
 	if (getopts(&params, argc, argv) != 0) return 1; // parameters were exctracted OK, let's decide what to do next

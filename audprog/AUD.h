@@ -7,7 +7,7 @@
 // AUD pin definition
 #define _AUD_RST	(1<<0)
 #define _AUD_SYNC	(1<<1)
-#define AUD_MD		(1<<2)
+
 #define AUD_CK		(1<<3)
 #define AUD_D0		(1<<4)
 #define AUD_D1		(1<<6)

@@ -151,10 +151,10 @@ unsigned char AUD_writeLWord(FT_HANDLE ftDevice, unsigned long a, unsigned long 
 void AUD_wTick(FT_HANDLE ftDevice) {
 	unsigned long b = 0;
 	unsigned char tData[] = {
-		AUD_MD | _AUD_RST | _AUD_SYNC,
-		AUD_MD | _AUD_RST | _AUD_SYNC | AUD_CK,
-		AUD_MD | _AUD_RST | _AUD_SYNC,
-		AUD_MD | _AUD_RST | _AUD_SYNC | AUD_CK
+		_AUD_RST | _AUD_SYNC,
+		_AUD_RST | _AUD_SYNC | AUD_CK,
+		_AUD_RST | _AUD_SYNC,
+		_AUD_RST | _AUD_SYNC | AUD_CK
 	};
 
 	FT_SetBitMode(ftDevice, 0xFF, FT_BITMODE_SYNC_BITBANG); // all pins outputs
@@ -167,18 +167,18 @@ void AUD_Poll(FT_HANDLE ftDevice) { 	// pooling for READY
 	unsigned char pollStatus = 0;
 	int a = 0;
 	unsigned char pollData[] = {
-		AUD_MD | _AUD_RST,
-		AUD_MD | _AUD_RST | AUD_CK,
-		AUD_MD | _AUD_RST,
-		AUD_MD | _AUD_RST | AUD_CK,
-		AUD_MD | _AUD_RST,
-		AUD_MD | _AUD_RST | AUD_CK,
-		AUD_MD | _AUD_RST,
-		AUD_MD | _AUD_RST | AUD_CK,
-		AUD_MD | _AUD_RST,
-		AUD_MD | _AUD_RST | AUD_CK,
-		AUD_MD | _AUD_RST,
-		AUD_MD | _AUD_RST | AUD_CK
+		_AUD_RST,
+		_AUD_RST | AUD_CK,
+		_AUD_RST,
+		_AUD_RST | AUD_CK,
+		_AUD_RST,
+		_AUD_RST | AUD_CK,
+		_AUD_RST,
+		_AUD_RST | AUD_CK,
+		_AUD_RST,
+		_AUD_RST | AUD_CK,
+		_AUD_RST,
+		_AUD_RST | AUD_CK
 	};
 
 	FT_SetBitMode(ftDevice, 0x0F, FT_BITMODE_SYNC_BITBANG); // AUD_D0..3 are inputs
@@ -216,22 +216,22 @@ void AUD_Poll(FT_HANDLE ftDevice) { 	// pooling for READY
 void AUD_SHSetRAMmode(FT_HANDLE ftDevice) {
 	unsigned long b = 0;
 	unsigned char pData[] = {
-		AUD_MD | _AUD_SYNC | _AUD_RST | AUD_CK,
-		AUD_MD | _AUD_SYNC,
-		AUD_MD | _AUD_SYNC | AUD_CK,
-		AUD_MD | _AUD_SYNC,
-		AUD_MD | _AUD_SYNC | AUD_CK,
-		AUD_MD | _AUD_SYNC,
-		AUD_MD | _AUD_SYNC | AUD_CK,
-		AUD_MD | _AUD_SYNC,
-		AUD_MD | _AUD_SYNC | AUD_CK,
-		AUD_MD | _AUD_SYNC,
-		AUD_MD | _AUD_SYNC | AUD_CK,
-		AUD_MD | _AUD_SYNC,
-		AUD_MD | _AUD_SYNC | _AUD_RST,
-		AUD_MD | _AUD_SYNC | _AUD_RST | AUD_CK,
-		AUD_MD | _AUD_SYNC | _AUD_RST,
-		AUD_MD | _AUD_SYNC | _AUD_RST | AUD_CK
+		_AUD_SYNC | _AUD_RST | AUD_CK,
+		_AUD_SYNC,
+		_AUD_SYNC | AUD_CK,
+		_AUD_SYNC,
+		_AUD_SYNC | AUD_CK,
+		_AUD_SYNC,
+		_AUD_SYNC | AUD_CK,
+		_AUD_SYNC,
+		_AUD_SYNC | AUD_CK,
+		_AUD_SYNC,
+		_AUD_SYNC | AUD_CK,
+		_AUD_SYNC,
+		_AUD_SYNC | _AUD_RST,
+		_AUD_SYNC | _AUD_RST | AUD_CK,
+		_AUD_SYNC | _AUD_RST,
+		_AUD_SYNC | _AUD_RST | AUD_CK
 	};
 	FT_SetBitMode(ftDevice, 0xFF, FT_BITMODE_SYNC_BITBANG); // all pins are outputs
 	FT_Write(ftDevice, pData, sizeof(pData), &b);
@@ -241,18 +241,18 @@ void AUD_SHSetRAMmode(FT_HANDLE ftDevice) {
 
 unsigned char * AUD_cDataFill(unsigned char * cData, unsigned int cDataSize, unsigned char cmd, unsigned long addr) {
 	// filling up command sequense 
-	cData[0] = AUD_MD | _AUD_RST | _AUD_SYNC;
-	cData[1] = AUD_MD | _AUD_RST | _AUD_SYNC | AUD_CK;
+	cData[0] = _AUD_RST | _AUD_SYNC;
+	cData[1] = _AUD_RST | _AUD_SYNC | AUD_CK;
 	for (int q = 2; q < 6; q++) {
-		cData[q] = AUD_MD | _AUD_RST | AUD_bitSwap(cmd & 0x0f);
+		cData[q] = _AUD_RST | AUD_bitSwap(cmd & 0x0f);
 		q++;
-		cData[q] = AUD_MD | _AUD_RST | AUD_CK | AUD_bitSwap(cmd & 0x0f);
+		cData[q] = _AUD_RST | AUD_CK | AUD_bitSwap(cmd & 0x0f);
 		cmd >>= 4;
 	}
 	for (unsigned int q = 6; q < cDataSize - 2; q++) {
-		cData[q] = AUD_MD | _AUD_RST | AUD_bitSwap(addr & 0x0f);
+		cData[q] = _AUD_RST | AUD_bitSwap(addr & 0x0f);
 		q++;
-		cData[q] = AUD_MD | _AUD_RST | AUD_CK | AUD_bitSwap(addr & 0x0f);
+		cData[q] = _AUD_RST | AUD_CK | AUD_bitSwap(addr & 0x0f);
 		addr >>= 4;
 	};
 	cData[cDataSize - 2] = cData[cDataSize - 4]; // additional clock after CMD
@@ -263,27 +263,27 @@ unsigned char * AUD_cDataFill(unsigned char * cData, unsigned int cDataSize, uns
 
 unsigned char * AUD_cwDataFill(unsigned char * cwData, unsigned int cwDataSize, unsigned char cmd, unsigned long addr, unsigned long data) {
 	// filling up command sequense 
-	cwData[0] = AUD_MD | _AUD_RST | _AUD_SYNC;
-	cwData[1] = AUD_MD | _AUD_RST | _AUD_SYNC | AUD_CK;
+	cwData[0] = _AUD_RST | _AUD_SYNC;
+	cwData[1] = _AUD_RST | _AUD_SYNC | AUD_CK;
 
 	for (int q = 2; q < 2*2*2 + 2; q++) {
-		cwData[q] = AUD_MD | _AUD_RST | AUD_bitSwap(cmd & 0x0f);
+		cwData[q] = _AUD_RST | AUD_bitSwap(cmd & 0x0f);
 		q++;
-		cwData[q] = AUD_MD | _AUD_RST | AUD_CK | AUD_bitSwap(cmd & 0x0f);
+		cwData[q] = _AUD_RST | AUD_CK | AUD_bitSwap(cmd & 0x0f);
 		cmd >>= 4;
 	}
 
 	for (unsigned int q = 6; q < (4*2*2) + 6; q++) {
-		cwData[q] = AUD_MD | _AUD_RST | AUD_bitSwap(addr & 0x0f);
+		cwData[q] = _AUD_RST | AUD_bitSwap(addr & 0x0f);
 		q++;
-		cwData[q] = AUD_MD | _AUD_RST | AUD_CK | AUD_bitSwap(addr & 0x0f);
+		cwData[q] = _AUD_RST | AUD_CK | AUD_bitSwap(addr & 0x0f);
 		addr >>= 4;
 	};
 
 	for (unsigned int q = 22; q < cwDataSize; q++) {
-		cwData[q] = AUD_MD | _AUD_RST | AUD_bitSwap((unsigned char)data & 0x0f);
+		cwData[q] = _AUD_RST | AUD_bitSwap((unsigned char)data & 0x0f);
 		q++;
-		cwData[q] = AUD_MD | _AUD_RST | AUD_CK | AUD_bitSwap((unsigned char)data & 0x0f);
+		cwData[q] = _AUD_RST | AUD_CK | AUD_bitSwap((unsigned char)data & 0x0f);
 		data >>= 4;
 	};
 
@@ -292,9 +292,9 @@ unsigned char * AUD_cwDataFill(unsigned char * cwData, unsigned int cwDataSize, 
 
 unsigned char * AUD_wDataFill(unsigned char * wData, unsigned int wDataSize, unsigned long data) {
 	for (unsigned int q = 0; q < wDataSize; q++) {
-		wData[q] = AUD_MD | _AUD_RST | AUD_bitSwap(data & 0x0F);
+		wData[q] = _AUD_RST | AUD_bitSwap(data & 0x0F);
 		q++;
-		wData[q] = AUD_MD | _AUD_RST | AUD_CK | AUD_bitSwap(data & 0x0F);
+		wData[q] = _AUD_RST | AUD_CK | AUD_bitSwap(data & 0x0F);
 		data >>= 4;
 	};
 	return wData;
@@ -302,11 +302,11 @@ unsigned char * AUD_wDataFill(unsigned char * wData, unsigned int wDataSize, uns
 
 unsigned char * AUD_rDataFill(unsigned char * rData, unsigned int rDataSize) {
 	for (unsigned int q = 0; q < rDataSize; q++) {
-		rData[q] = AUD_MD | _AUD_RST | _AUD_SYNC;
+		rData[q] = _AUD_RST | _AUD_SYNC;
 		q++;
-		rData[q] = AUD_MD | _AUD_RST | _AUD_SYNC | AUD_CK;
+		rData[q] = _AUD_RST | _AUD_SYNC | AUD_CK;
 		q++;
-		rData[q] = AUD_MD | _AUD_RST | _AUD_SYNC | AUD_CK;
+		rData[q] = _AUD_RST | _AUD_SYNC | AUD_CK;
 	};
 	return rData;
 }

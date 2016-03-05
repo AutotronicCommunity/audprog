@@ -60,7 +60,7 @@ unsigned char getStatus(FT_HANDLE ftDevice) {
 
 	serialize(header, rawData.header, sizeof(header));
 	serialize(data, rawData.data, sizeof(data));
-	CS_Low(ftDevice);
+// CS_Low(ftDevice);
 	FT_Write(ftDevice, &rawData, sizeof(rawData), &b);
 	FT_Read(ftDevice, &rawData, sizeof(rawData), &b);
 	CS_High(ftDevice);
@@ -74,7 +74,7 @@ void writeEnable(FT_HANDLE ftDevice) {
 	DWORD b;
 	unsigned char rawHeader[sizeof(header) * 16];
 	serialize(header, rawHeader, sizeof(header));
-	CS_Low(ftDevice);
+// CS_Low(ftDevice);
 	FT_Write(ftDevice, &rawHeader, sizeof(rawHeader), &b);
 	FT_Read(ftDevice, &rawHeader, sizeof(rawHeader), &b);
 	CS_High(ftDevice);
@@ -85,7 +85,7 @@ void writeDisable(FT_HANDLE ftDevice) {
 	DWORD b;
 	unsigned char rawHeader[sizeof(header) * 16];
 	serialize(header, rawHeader, sizeof(header));
-	CS_Low(ftDevice);
+// CS_Low(ftDevice);
 	FT_Write(ftDevice, &rawHeader, sizeof(rawHeader), &b);
 	FT_Read(ftDevice, &rawHeader, sizeof(rawHeader), &b);
 	CS_High(ftDevice);
@@ -100,7 +100,7 @@ void devWriteByte(FT_HANDLE ftDevice, unsigned char wByte, unsigned short addres
 
 	serialize(packet, rawData, sizeof(packet));
 	writeEnable(ftDevice);
-	CS_Low(ftDevice);
+// CS_Low(ftDevice);
 	FT_Write(ftDevice, &rawData, sizeof(rawData), &b);
 	FT_Read(ftDevice, &rawData, sizeof(rawData), &b);
 	CS_High(ftDevice);
@@ -113,7 +113,7 @@ unsigned char devReadByte(FT_HANDLE ftDevice, unsigned short address) {
 	unsigned char rawData[sizeof(packet) * 16] = {};
 	DWORD b;
 	serialize(packet, rawData, sizeof(packet));
-	CS_Low(ftDevice);
+// CS_Low(ftDevice);
 	FT_Write(ftDevice, &rawData, sizeof(rawData), &b);
 	FT_Read(ftDevice, &rawData, sizeof(rawData), &b);
 	CS_High(ftDevice);
