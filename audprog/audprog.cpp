@@ -101,7 +101,7 @@ FT_HANDLE FTDI_Init(unsigned int devNum) {
 		return NULL;
 	}
 
-	if (FT_SetUSBParameters(ftDevice, 64, 64) != FT_OK) {
+	if (FT_SetUSBParameters(ftDevice, 128, 128) != FT_OK) {
 		printf("USB transfer size error\n");
 		return NULL;
 	}
@@ -398,6 +398,8 @@ int EE_writeFile(PARAMS* params) {
 		devWriteByte(params->ftDevice, data, a);
 		printf("  \r%02d%%", ((100 * a) / len));
 	}
+
+	writeDisable(params->ftDevice);
 	printf("\r100%%\n%d bytes written.\n", a);
 	CloseHandle(iFile);
 	return 0;
