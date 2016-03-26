@@ -73,7 +73,7 @@ void writeDisable(FT_HANDLE ftDevice) {
 
 void devWriteByte(FT_HANDLE ftDevice, unsigned char wByte, unsigned short address) {
 	unsigned char header[] = {0x06};
-	unsigned char packet[] = { 0x02, (unsigned char)((address >> 8) & 0xFF), (unsigned char)(address & 0xFF), wByte };
+	unsigned char packet[] = {0x02, (unsigned char)((address >> 8) & 0xFF), (unsigned char)(address & 0xFF), wByte };
 	DWORD b = 0;
 	struct {
 		unsigned char csInit;
@@ -83,8 +83,8 @@ void devWriteByte(FT_HANDLE ftDevice, unsigned char wByte, unsigned short addres
 		unsigned char csHigh;
 	} rawData;
 
-	rawData = { CS, {}, CS, {}, CS };
-	serialize(header, rawData.header, sizeof(packet));
+	rawData = { CS, {}, CS, {}, CS};
+	serialize(header, rawData.header, sizeof(header));
 	serialize(packet, rawData.data, sizeof(packet));
 	FT_Write(ftDevice, &rawData, sizeof(rawData), &b);
 	FT_Read(ftDevice, &rawData, sizeof(rawData), &b);

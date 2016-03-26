@@ -207,7 +207,7 @@ void AUD_Poll(FT_HANDLE ftDevice) { 	// pooling for READY
 		}
 		a++;
 		if (a > 50) {
-			printf_s("Uknown AUD bus error! Please on/off the ECU.                                           \n");
+			printf_s("Uknown AUD bus error! Status 0x%02x Please on/off the ECU.                                           \n", pollStatus);
 			break;
 		}
 	}

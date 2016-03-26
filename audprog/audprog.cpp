@@ -133,7 +133,9 @@ int getopts(PARAMS *params, int argc, wchar_t* argv[]){
 
 		// choosing EEPROM or AUD 
 		if (wcscmp(argv[q], L"-i") == 0) {
-			if (wcscmp(argv[q + 1], L"AUD") == 0) params->iface = AUD;
+			if (wcscmp(argv[q + 1], L"AUD") == 0) {
+				params->iface = AUD;
+			}
 			if (wcscmp(argv[q + 1], L"EE") == 0) params->iface = EEPROM;
 			if (params->iface == DEVICE_IFACE_NONE) {
 				wprintf_s(L"Incorrect interface type specified - \"%s\"\n", argv[q + 1]);
@@ -207,6 +209,7 @@ int AUD_uploadFile(PARAMS* params) {
 	if (params->mode == AUD_WORD) a = (a / 2) * 2; // to avoid unaligned access 4n+1 or 4n+3
 	if (params->mode == AUD_LONGWORD) a = (a / 4) * 4; // to avoid unaligned access 4n+1, 4n+2 or 4n+3
 	printf("\nUploading from offset 0x%06x\n", a);
+	AUD_SHSetRAMmode(params->ftDevice);
 
 	while (a < params->offset + params->len) {
 		switch (params->mode) {
@@ -253,6 +256,8 @@ int AUD_readToFile(PARAMS* params) {
 	}
 	printf("\nReading from offset 0x%06x\n", a);
 
+	AUD_SHSetRAMmode(params->ftDevice);
+
 	while (a < params->offset + params->len) {
 		switch (params->mode) {
 		case AUD_BYTE:
@@ -290,6 +295,8 @@ int AUD_readToScreen(PARAMS* params) {
 	unsigned long a = params->offset;
 
 	printf_s("\n");
+	
+	AUD_SHSetRAMmode(params->ftDevice);
 
 	while (a < params->offset + params->len) {
 		switch (params->mode) {
@@ -326,6 +333,8 @@ int AUD_dumpToFile(PARAMS* params) {
 
 	if (params->romSize == ROM_1024) size *= 2;
 	printf("\nDumping %d bytes\n", size);
+
+	AUD_SHSetRAMmode(params->ftDevice);
 
 	HANDLE oFile = CreateStorage(params->fileName);
 	while (a < size) {
