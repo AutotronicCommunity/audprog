@@ -159,6 +159,7 @@ int getopts(PARAMS *params, int argc, wchar_t* argv[]){
 			if (wcscmp(argv[q + 1], L"write") == 0) params->action = WRITE;
 			if (wcscmp(argv[q + 1], L"dump") == 0)  params->action = DUMP;
 			if (wcscmp(argv[q + 1], L"print") == 0) params->action = PRINT;
+			if (wcscmp(argv[q + 1], L"monitor") == 0) params->action = MONITOR;
 			if (params->action == DEVICE_ACTION_NONE) {
 				wprintf_s(L"Incorrect action specified - \"%s\"\n", argv[q + 1]);
 				return 1;
@@ -323,6 +324,23 @@ int AUD_readToScreen(PARAMS* params) {
 	return 0;
 }
 
+int AUD_monitor(PARAMS* params) {
+
+	unsigned long lData;
+
+	params->offset = (params->offset / 4) * 4; // to avoid unaligned access 4n+1, 4n+2 or 4n+3
+	unsigned long a = params->offset;
+
+	AUD_SHSetRAMmode(params->ftDevice);
+	while (1) {
+		lData = AUD_readLWord(params->ftDevice, a);
+		printf_s("\r0x%06x  ", a);
+		printf_s("%08x ", lData);
+	}
+	return 0;
+}
+
+
 int AUD_dumpToFile(PARAMS* params) {
 	unsigned long a = 0;
 	int speed = 0, total = 0, elapsed = 0, left = 0;
@@ -447,6 +465,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 			AUD_readToScreen(&params); break;
 		case DUMP:
 			AUD_dumpToFile(&params); break;
+		case MONITOR:
+			AUD_monitor(&params); break;
 		}
 		return 0;
 	}
