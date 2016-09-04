@@ -18,6 +18,16 @@ audprog.exe -d <FTDI device number> -i <interface> -m <AUD mode> -a <action> -o 
 	wprintf(help);
 }
 
+unsigned long le2be(unsigned long leData)
+{
+	return ((leData & 0xFF00FF00) >> 8) | ((leData & 0x00FF00FF) << 8);
+}
+
+unsigned long lw2bw(unsigned long leData)
+{
+	return ((leData & 0xFFFF0000) >> 16) | ((leData & 0x0000FFFF) << 16);
+}
+
 HANDLE CreateStorage(wchar_t* filename) {
 	HANDLE hStorage = CreateFile(filename,
 		GENERIC_READ | GENERIC_WRITE,
@@ -287,9 +297,7 @@ int AUD_readToFile(PARAMS* params) {
 
 int AUD_readToScreen(PARAMS* params) {
 	
-	unsigned char bData;
-	unsigned short wData;
-	unsigned long lData;
+	unsigned long pData;
 
 	if (params->mode == AUD_WORD) params->offset = (params->offset / 2) * 2; // to avoid unaligned access 4n+1 or 4n+3
 	if (params->mode == AUD_LONGWORD) params->offset = (params->offset / 4) * 4; // to avoid unaligned access 4n+1, 4n+2 or 4n+3
@@ -302,21 +310,21 @@ int AUD_readToScreen(PARAMS* params) {
 	while (a < params->offset + params->len) {
 		switch (params->mode) {
 		case AUD_BYTE:
-			bData = AUD_readByte(params->ftDevice, a);
+			pData = le2be(AUD_readByte(params->ftDevice, a));
 			if ((a - params->offset) % 0x10 == 0) printf_s("\n0x%06x  ", a);
-			printf_s("%02x ", bData);
+			printf_s("%02x ", pData);
 			a++;
 			break;
 		case AUD_WORD:
-			wData = AUD_readWord(params->ftDevice, a);
+			pData = le2be(AUD_readWord(params->ftDevice, a));
 			if ((a - params->offset) % 0x10 == 0) printf_s("\n0x%06x  ", a);
-			printf_s("%04x ", wData);
+			printf_s("%04x ", pData);
 			a += 2;
 			break;
 		case AUD_LONGWORD:
-			lData = AUD_readLWord(params->ftDevice, a);
+			pData = lw2bw(le2be(AUD_readLWord(params->ftDevice, a)));
 			if ((a - params->offset) % 0x010 == 0) printf_s("\n0x%06x  ", a);
-			printf_s("%08x ", lData);
+			printf_s("%08x ", pData);
 			a += 4;
 			break;
 		}
@@ -333,7 +341,7 @@ int AUD_monitor(PARAMS* params) {
 
 	AUD_SHSetRAMmode(params->ftDevice);
 	while (1) {
-		lData = AUD_readLWord(params->ftDevice, a);
+		lData = lw2bw(le2be(AUD_readLWord(params->ftDevice, a)));
 		printf_s("\r0x%06x  ", a);
 		printf_s("%08x ", lData);
 	}
