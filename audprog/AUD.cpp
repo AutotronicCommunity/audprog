@@ -27,7 +27,7 @@ unsigned long AUD_readLWord(FT_HANDLE ftDevice, unsigned long a) {
 	FT_Read(ftDevice, rData, sizeof(rData), &b);
 	for (int q = 3; q < sizeof(rData); q += 3) {
 		lData <<= 4;
-		lData |= 0x0F & AUD_bitUnSwap(rData[q] & 0xF0);
+		lData |= 0x0F & AUD_bitUnSwap(rData[q] & AUD_DMASK);
 	}
 	return ((lData & 0x0F0F0F0F) << 4) | ((lData & 0xF0F0F0F0) >> 4);
 }
@@ -59,7 +59,7 @@ unsigned char AUD_readByte(FT_HANDLE ftDevice, unsigned long a) {
 
 	for (int q = 3; q < sizeof(rData); q += 3) {
 		bData <<= 4;
-		bData |= 0x0F & AUD_bitUnSwap(rData[q] & 0xF0);
+		bData |= 0x0F & AUD_bitUnSwap(rData[q] & AUD_DMASK);
 	}
 	return ((bData & 0x0F) << 4) | ((bData & 0xF0) >> 4);
 }
@@ -91,7 +91,7 @@ unsigned short AUD_readWord(FT_HANDLE ftDevice, unsigned long a) {
 
 	for (int q = 3; q < sizeof(rData); q += 3) {
 		wData <<= 4;
-		wData |= 0x0F0F & AUD_bitUnSwap(rData[q] & 0xF0F0);
+		wData |= 0x0F & AUD_bitUnSwap(rData[q] & (AUD_DMASK));
 	}
 	return ((wData & 0x0F0F) << 4) | ((wData & 0xF0F0) >> 4);
 }
@@ -181,13 +181,13 @@ void AUD_Poll(FT_HANDLE ftDevice) { 	// pooling for READY
 		_AUD_RST | AUD_CK
 	};
 
-	FT_SetBitMode(ftDevice, 0x0F, FT_BITMODE_SYNC_BITBANG); // AUD_D0..3 are inputs
+	FT_SetBitMode(ftDevice, 0xff & (~AUD_DMASK), FT_BITMODE_SYNC_BITBANG); // AUD_D0..3 are inputs
 	unsigned char r = 1;
 	while (r) {
 		FT_Write(ftDevice, pollData, sizeof(pollData), &b);
 		FT_Read(ftDevice, pollData, sizeof(pollData), &b);
 		for (int q = 0; q < sizeof(pollData); q++) {
-			pollStatus = pollData[q] & 0xF0;
+			pollStatus = pollData[q] & AUD_DMASK;
 //			Sleep(200);
 //			printf("pool status 0x%02x\n", pollStatus);
 			if (pollStatus == AUD_D0) {
