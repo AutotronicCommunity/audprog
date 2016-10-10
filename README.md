@@ -17,3 +17,5 @@ DBUS0 - DO
 DBUS3 - DI  
 DBUS4 - CS  
 DBUS6 - CK  
+
+HW schematics in KiCAD format is also inclueded in .\hw\ folder
