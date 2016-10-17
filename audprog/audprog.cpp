@@ -8,8 +8,8 @@ void printHelp() {
 	const wchar_t* help = L"AUD Programmimg utility v0.1. Please report errors to shuher@list.ru\nUsage:\n\
 audprog.exe -d <FTDI device number> -i <interface> -m <AUD mode> -a <action> -o <offset> -s <size> -l <lenght> -f <filename>\n\
                <FTDI device number> - number of FTDI device (useful for multichannel devices like FT2232)\n\
-			   <--list> - use \"audprog.exe --list\" to query the list of FTDI devices attached to the system to determine the correct one for usage\n\
-			   <interface> - \"AUD\" or \"EE\"\n\
+               <--list> - use \"audprog.exe --list\" to query the list of FTDI devices attached to the system to determine the correct one for usage\n\
+               <interface> - \"AUD\" or \"EE\"\n\
                <AUD mode> - \"byte\", \"word\" or \"longword\"\n\
                <action> - \"read\", \"write\", \"print\", \"dump\" or \"monitor\"\n\
                <offset> - to start from, decimal or hexadecimal\n\
