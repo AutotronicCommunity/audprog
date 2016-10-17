@@ -1,4 +1,7 @@
-﻿Build started 10.10.2016 22:58:36.
+﻿Build started 17.10.2016 22:18:59.
+     1>Project "d:\Documents\Dropbox\Projects\PC\audprog\audprog\audprog.vcxproj" on node 2 (Clean target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppClean.targets(76,5): warning : The process cannot access the file 'd:\documents\dropbox\projects\pc\audprog\audprog\release\audprog.obj' because it is being used by another process.
+     1>Done Building Project "d:\Documents\Dropbox\Projects\PC\audprog\audprog\audprog.vcxproj" (Clean target(s)).
 
 Build succeeded.
 

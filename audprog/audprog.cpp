@@ -7,11 +7,13 @@
 void printHelp() {
 	const wchar_t* help = L"AUD Programmimg utility v0.1. Please report errors to shuher@list.ru\nUsage:\n\
 audprog.exe -d <FTDI device number> -i <interface> -m <AUD mode> -a <action> -o <offset> -s <size> -l <lenght> -f <filename>\n\
-               <interface> - \"AUD\" or \"EE\"\n\
+               <FTDI device number> - number of FTDI device (useful for multichannel devices like FT2232)\n\
+			   <--list> - use \"audprog.exe --list\" to query the list of FTDI devices attached to the system to determine the correct one for usage\n\
+			   <interface> - \"AUD\" or \"EE\"\n\
                <AUD mode> - \"byte\", \"word\" or \"longword\"\n\
-               <action> - \"read\", \"write\", \"print\" or \"dump\"\n\
+               <action> - \"read\", \"write\", \"print\", \"dump\" or \"monitor\"\n\
                <offset> - to start from, decimal or hexadecimal\n\
-               <size> - ROM size for AUD dumping - \"512\" or \"1024\", EEPROM size for EEPROM dumping - \"32\" or \"64\"\n\
+               <size> - ROM size for AUD dumping - \"512\" or \"1024\", EEPROM size for EEPROM dumping (in kBytes) - \"1\" or \"4\" for 93cxx ICs, \"32\" or \"64\" for 95xxx ICs\n\
                <lenght> - data size to be read from AUD (in bytes, words or longwords depending on AUD mode)\n\
                <filename> - file to save/dump to or to read from";
 
